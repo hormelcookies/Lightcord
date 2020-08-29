@@ -11,7 +11,7 @@ import DOM from "./domtools";
 
 import BDLogo from "../ui/bdLogo";
 import TooltipWrap from "../ui/tooltipWrap";
-import LightcordLogo from "../svg/lightcord";
+import LightcordLogo from "../svg/Lightcord";
 import PluginCertifier from "./pluginCertifier";
 import distant, { uuidv4 } from "./distant";
 import EmojiModule from "./emojiModule"

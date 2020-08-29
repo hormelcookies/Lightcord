@@ -4,6 +4,20 @@ const path = require("path")
 
 const MODULES_DIRNAME = path.join(__dirname, "modules")
 
+var exitedWithErrorProcessList = [];
+
+function spawnNpmInstallProcess (targetDir) {
+    child_process.spawn((process.platform === "win32" ? "npm.cmd" : "npm"), ["i"], {
+        cwd: targetDir,
+        env: process.env,
+        stdio: "inherit"
+    }).on("error", (err) => {
+        console.log("Error while running 'npm i' in target directory " + targetDir)
+        console.error(err)
+        exitedWithErrorProcessList.push(targetDir)
+    })
+}
+
 fs.readdirSync(MODULES_DIRNAME, {withFileTypes: true})
 .forEach(e => {
     if(!e.isDirectory())return
@@ -12,43 +26,26 @@ fs.readdirSync(MODULES_DIRNAME, {withFileTypes: true})
     if(e.name === "discord_spellcheck")return
     
     console.log(`Installing modules in ${e.name}.`)
-
-    child_process.spawn((process.platform === "win32" ? "npm.cmd" : "npm"), ["i"], {
-        cwd: MODULE_DIRNAME,
-        env: process.env,
-        stdio: "inherit"
-    }).on("error", (err) => {
-        console.error(err)
-        process.exit(1)
-    })
+    spawnNpmInstallProcess(MODULE_DIRNAME)
 })
 
 
 const MODULE_DIRNAME = path.join(__dirname, "modules", "discord_desktop_core", "core")
 const BETTERDISCORD_DIRNAME = path.join(__dirname, "BetterDiscordApp")
-const DISCORDJS_DIRNAME = path.join(__dirname, "BetterDiscordApp")
+const DISCORDJS_DIRNAME = path.join(__dirname, "DiscordJS")
+const LIGHTCORDAPI_DIRNAME = path.join(__dirname, "LightcordApi")
 
-child_process.spawn((process.platform === "win32" ? "npm.cmd" : "npm"), ["i"], {
-    cwd: MODULE_DIRNAME,
-    env: process.env,
-    stdio: "inherit"
-}).on("error", (err) => {
-    console.error(err)
-    process.exit(1)
-})
+spawnNpmInstallProcess(MODULE_DIRNAME)
+spawnNpmInstallProcess(BETTERDISCORD_DIRNAME)
+spawnNpmInstallProcess(LIGHTCORDAPI_DIRNAME)
+spawnNpmInstallProcess(DISCORDJS_DIRNAME)
 
-child_process.spawn((process.platform === "win32" ? "npm.cmd" : "npm"), ["i"], {
-    cwd: BETTERDISCORD_DIRNAME,
-    env: process.env,
-    stdio: "inherit"
-}).on("error", (err) => {
-    console.error(err)
-    process.exit(1)
-})
-
-
-child_process.spawn((process.platform === "win32" ? "npm.cmd" : "npm"), ["i"], {
-    cwd: DISCORDJS_DIRNAME,
-    env: process.env,
-    stdio: "inherit"
+process.on("beforeExit", () => {
+    if (exitedWithErrorProcessList.length != 0){
+        console.error("Failed to run 'npm install' on:\n")
+        exitedWithErrorProcessList.forEach((val)=>{
+            console.error(val)
+        });
+    }
+    console.error();
 })
