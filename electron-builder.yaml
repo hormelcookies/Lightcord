@@ -1,0 +1,37 @@
+---
+appId: com.lightcord.app
+productName: Lightcord
+directories:
+  app: distApp
+  output: builds
+afterPack: "./afterpack.js"
+win:
+  target:
+  - target: zip
+    arch:
+    - ia32
+  icon: app.ico
+  publisherName: Lightcord
+  files:
+  - "!**/*.ts"
+  - "!**/*.so"
+  - "!**/*.4"
+  asarUnpack: "**/*.{node,dll}"
+linux:
+  target:
+  - zip
+  icon: app.ico
+  files:
+  - "!**/*.ts"
+  - "!**/*.dll"
+  asarUnpack: "**/*.{node,so.4}"
+mac:
+  target:
+  - zip
+  icon: app_icon_darwin.icns
+  files:
+  - "!**/*.ts"
+  - "!**/*.dll"
+  - "!**/*.so"
+  - "!**/*.4"
+  asarUnpack: "**/*.{node,dylib}"

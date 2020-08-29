@@ -7,6 +7,11 @@ const production = true
 
 let fs = require("fs")
 
+exports.default = async function beforeBuild(context){
+    await main()
+    return true
+}
+
 console.log = (...args) => {
     process.stdout.write(Buffer.from(util.formatWithOptions({colors: true}, ...args)+"\n", "binary").toString("utf8"))
 }
@@ -189,7 +194,7 @@ async function main(){
     let packageJSON = require("./package.json")
     packageJSON.scripts["build:electron_linux"] = packageJSON.scripts["build:electron_linux"].replace("./distApp", ".")
     packageJSON.scripts["build:electron_win"] = packageJSON.scripts["build:electron_win"].replace("./distApp", ".")
-    packageJSON.scripts["build:electron_darwin"] = packageJSON.scripts["build:electron_darwin"].replace("./distApp", ".")
+    packageJSON.scripts["build:electron_mac"] = packageJSON.scripts["build:electron_mac"].replace("./distApp", ".")
     
     fs.writeFileSync(path.join(__dirname, "distApp", "package.json"), JSON.stringify(packageJSON), "utf8")
     

@@ -118,3 +118,6 @@ discord-webrtc_0
 
 # macOS Stuff
 .DS_Store
+
+# VS Code stuff
+.vscode
