@@ -20,6 +20,7 @@ const { promisify } = require('util')
 const rimraf = promisify(require('rimraf'))
 const asar = require('asar');
 const micromatch = require("micromatch")
+const { join } = require("path")
 
 const commonExclude = [
     "!**/{test,__tests__,tests,powered-test,example,examples,CHANGELOG.md,README.md,README,readme.md,readme}",
@@ -63,20 +64,20 @@ function globalOrPlatformArrayParam(local, global){
 
 exports.default = async function afterPackHook(context){
   // Get build parameters from the context.
-  const appDir = context.packager.info._appDir + "/"
+  const appDir = context.packager.info._appDir
   const platform = context.packager.platform.nodeName
   const globalFilesParam = context.packager.info._configuration.files;
   const platformFilesParam = context.packager.platformSpecificBuildOptions.files
   const globalUnpackAsarParam = context.packager.info._configuration.asarUnpack;
   const platformUnpackAsarParam = context.packager.platformSpecificBuildOptions.asarUnpack;
 
-  let resourcesDir = context.appOutDir + "/resources/"
+  let resourcesDir = join(context.appOutDir, "resources")
   // exception for resources dir for mac; win and linux use the same directory.
   if (platform == "darwin"){
-    resourcesDir = context.appOutDir + "/" + context.packager.appInfo.productFilename + ".app/Contents/Resources/"
+    resourcesDir = join(context.appOutDir, context.packager.appInfo.productFilename + ".app", "Contents", "Resources")
   }
 
-  const asarAppUnpackedDir = resourcesDir + "app.asar.unpacked/"
+  const asarAppUnpackedDir = join(resourcesDir + "app.asar.unpacked")
 
   // The Platform-specific build options override the common config, so attempt to use those first.
   let globPatterns = globalOrPlatformArrayParam(platformFilesParam, globalFilesParam)
@@ -96,14 +97,14 @@ exports.default = async function afterPackHook(context){
   let filteredNestedFiles = micromatch(nestedNMFiles, globPatterns, {matchBase:true})
 
   // This is the directory we're copying everything to, to create the asar
-  let asarAppDir = resourcesDir + "app/"
+  let asarAppDir = join(resourcesDir, "app")
 
   // Get a listing of all the files in the app.asar.unpacked dir, so we can create a franken-glob
   // to pass to asar when packing.
   let unpackedFileList = glob.sync("**/*", {cwd:asarAppUnpackedDir, dot:true})
   let unpackPattern = "{"
   unpackedFileList.forEach((file,idx,arr)=>{
-    unpackPattern += asarAppDir + file + ','
+    unpackPattern += join(asarAppDir, file) + ','
   })
 
   // Get any user-defined asarUnpack patterns in case we need to unpack some hoisted node_modules,
@@ -111,7 +112,7 @@ exports.default = async function afterPackHook(context){
   let userUnpackGlob = globalOrPlatformArrayParam(platformUnpackAsarParam, globalUnpackAsarParam)
   let nestedFilesToUnpack = micromatch(nestedNMFiles, userUnpackGlob, {matchBase:true})
   nestedFilesToUnpack.forEach((file)=>{
-    unpackPattern += asarAppDir + file + ','
+    unpackPattern += join(asarAppDir, file) + ','
   })
   // trailing commas don't matter in this pattern.
   unpackPattern += '}'
@@ -125,16 +126,16 @@ exports.default = async function afterPackHook(context){
 
   // Unpack everything in app.asar to the resources/app dir.
   // This also copies all the files in 'app.asar.unpacked' to here as well.
-  asar.extractAll(resourcesDir + "app.asar", asarAppDir)
-  await rimraf(resourcesDir + "app.asar")
+  asar.extractAll(join(resourcesDir, "app.asar"), asarAppDir)
+  await rimraf(join(resourcesDir, "app.asar"))
   await rimraf(asarAppUnpackedDir)
 
   // Copy the nested node_modules files to the extracted directory.
   nestedFilesToCopy.forEach((file)=>{
-    fs.copySync(appDir + file, asarAppDir + file)
+    fs.copySync(join(appDir, file), join(asarAppDir, file))
   })
   // build the asar
-  await asar.createPackageWithOptions(asarAppDir, resourcesDir + "app.asar", {unpack: unpackPattern})
+  await asar.createPackageWithOptions(asarAppDir, join(resourcesDir, "app.asar"), {unpack: unpackPattern})
   await rimraf(asarAppDir)
 
   return true
