@@ -29,8 +29,12 @@ win:
   - "**/*.dll"
 linux:
   target:
-  - zip
-  - AppImage
+  - target: zip
+    arch:
+    - x64
+  - target: AppImage
+    arch:
+    - x64
   icon: discord.png
   files:
   - "**/*"
@@ -44,7 +48,9 @@ linux:
   - "**/*.so.4"
 mac:
   target:
-  - zip
+  - target: zip
+    arch:
+    - x64
   icon: app_icon_darwin.icns
   files:
   - "**/*"
