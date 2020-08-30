@@ -16,14 +16,16 @@ win:
   - "!**/*.ts"
   - "!**/*.so"
   - "!**/*.4"
+  - "!**/*.dylib"
   asarUnpack: "**/*.{node,dll}"
 linux:
   target:
   - zip
-  icon: app.ico
+  icon: discord.png
   files:
   - "!**/*.ts"
   - "!**/*.dll"
+  - "!**/*.dylib"
   asarUnpack: "**/*.{node,so.4}"
 mac:
   target:

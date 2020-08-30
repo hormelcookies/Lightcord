@@ -21,17 +21,13 @@ const commonExclude = [
     "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}"
 ]
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 exports.default = async function afterPackHook(context){
-    
+
   const appDir = context.packager.info._appDir + "/"
-  const platform = context.packager.platform.name
+  const platform = context.packager.platform.nodeName
   let resourcesDir = context.appOutDir + "/resources/"
-  // hardcoded exception for resources dir for mac
-  if (platform == "mac"){
+  // exception for resources dir for mac
+  if (platform == "darwin"){
     resourcesDir = context.appOutDir + "/" + context.packager.appInfo.productFilename + ".app/Contents/Resources/"
   }
 
@@ -61,6 +57,8 @@ exports.default = async function afterPackHook(context){
 
   globPatterns = globPatterns.concat(commonExclude)
   
+  // Take the files from the app directory and copy them to make the asar.app directory
+  // according to the glob specified in the electron-builder config for this target
   let files = glob.sync(globPatterns, { dot:true, cwd: appDir})
   
   await new Promise ((resolve) => {
@@ -77,7 +75,7 @@ exports.default = async function afterPackHook(context){
   let unpackedFiles = glob.sync(asarUnpackPattern, {dot:true, cwd: asarAppDir})
   await new Promise ((resolve) => {
     unpackedFiles.forEach(async (file, index, array)=>{
-      if (platform == "win") {
+      if (platform == "win32") {
         if (file.includes(".node") && (file.includes("_linux") || file.includes("_darwin"))){
           await fs.remove(asarAppDir + file)
         }
@@ -94,7 +92,7 @@ exports.default = async function afterPackHook(context){
     })
   }).catch(console.error)
 
-
+  // build the asar from the newly created app dir, unpacking the files necessary according to the glob
   await asar.createPackageWithOptions(asarAppDir, resourcesDir + "app.asar", {unpack: asarUnpackPattern})
   await rimraf(asarAppDir)
   return true
