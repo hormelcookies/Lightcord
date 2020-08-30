@@ -24,7 +24,6 @@ win:
   - "!**/*.dylib"
   - "!**/*_darwin.node"
   - "!**/*_linux.node"
-  # This gets passed to the afterPack hook to help recreate the asar file. This must be a single string.
   asarUnpack: 
   - "**/*.node"
   - "**/*.dll"
