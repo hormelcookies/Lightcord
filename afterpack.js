@@ -77,7 +77,7 @@ exports.default = async function afterPackHook(context){
     resourcesDir = join(context.appOutDir, context.packager.appInfo.productFilename + ".app", "Contents", "Resources")
   }
 
-  const asarAppUnpackedDir = join(resourcesDir + "app.asar.unpacked")
+  const asarAppUnpackedDir = join(resourcesDir, "app.asar.unpacked")
 
   // The Platform-specific build options override the common config, so attempt to use those first.
   let globPatterns = globalOrPlatformArrayParam(platformFilesParam, globalFilesParam)
