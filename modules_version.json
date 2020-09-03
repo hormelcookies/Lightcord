@@ -1,0 +1,50 @@
+{
+    "win32": {
+        "host_version": "0.0.307",
+        "modules": {
+            "discord_cloudsync": 1, 
+            "discord_desktop_core": 1, 
+            "discord_dispatch": 3, 
+            "discord_erlpack": 1, 
+            "discord_game_utils": 2, 
+            "discord_hook": 1, 
+            "discord_krisp": 1, 
+            "discord_media": 1, 
+            "discord_modules": 1, 
+            "discord_overlay2": 1, 
+            "discord_rpc": 1, 
+            "discord_utils": 1, 
+            "discord_vigilante": 1, 
+            "discord_voice": 1
+        }
+    },
+    "osx":{
+        "host_version": "0.0.258",
+        "modules": {
+            "discord_cloudsync": 1, 
+            "discord_desktop_core": 1, 
+            "discord_dispatch": 3, 
+            "discord_erlpack": 1, 
+            "discord_game_utils": 2, 
+            "discord_krisp": 1, 
+            "discord_modules": 1, 
+            "discord_rpc": 1, 
+            "discord_utils": 1, 
+            "discord_voice": 1          
+        }
+    },
+    "linux":{
+        "host_version": "0.0.11",
+        "modules": {
+            "discord_cloudsync": 1, 
+            "discord_desktop_core": 1, 
+            "discord_dispatch": 3, 
+            "discord_erlpack": 1, 
+            "discord_game_utils": 2, 
+            "discord_modules": 1, 
+            "discord_rpc": 1, 
+            "discord_utils": 1, 
+            "discord_voice": 1
+        }
+    }
+}
