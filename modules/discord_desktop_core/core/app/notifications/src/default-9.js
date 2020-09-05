@@ -1,0 +1,1 @@
+module.exports = require.p + 'a934ab008c7f6a2274ec441f6be0696a.woff';
