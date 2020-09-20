@@ -1,0 +1,54 @@
+{
+  "branch": "stable",
+  "win": {
+    "host_version": "0.0.308",
+    "modules": {
+      "discord_cloudsync": 2,
+      "discord_desktop_core": 2,
+      "discord_dispatch": 1,
+      "discord_erlpack": 1,
+      "discord_game_utils": 1,
+      "discord_hook": 1,
+      "discord_krisp": 1,
+      "discord_media": 1,
+      "discord_modules": 1,
+      "discord_overlay2": 1,
+      "discord_rpc": 1,
+      "discord_spellcheck": 1,
+      "discord_utils": 1,
+      "discord_vigilante": 1,
+      "discord_voice": 1
+    }
+  },
+  "osx": {
+    "host_version": "0.0.259",
+    "modules": {
+      "discord_cloudsync": 2,
+      "discord_desktop_core": 2,
+      "discord_dispatch": 1,
+      "discord_erlpack": 1,
+      "discord_game_utils": 1,
+      "discord_krisp": 1,
+      "discord_modules": 1,
+      "discord_rpc": 1,
+      "discord_spellcheck": 1,
+      "discord_utils": 1,
+      "discord_voice": 1
+    }
+  },
+  "linux": {
+    "host_version": "0.0.12",
+    "modules": {
+      "discord_cloudsync": 2,
+      "discord_desktop_core": 2,
+      "discord_dispatch": 1,
+      "discord_erlpack": 1,
+      "discord_game_utils": 1,
+      "discord_modules": 1,
+      "discord_rpc": 1,
+      "discord_spellcheck": 1,
+      "discord_utils": 1,
+      "discord_voice": 1
+    }
+  }
+}

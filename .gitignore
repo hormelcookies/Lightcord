@@ -121,3 +121,10 @@ discord-webrtc_0
 
 # VS Code stuff
 .vscode
+
+# modules downloaded from Discord
+downloaded_modules
+workspace_modules
+new_modules
+new_downloaded_modules
+new_workspace_modules
