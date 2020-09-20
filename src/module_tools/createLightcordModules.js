@@ -98,5 +98,10 @@ function createLightcordModules(options) {
         // dynamically generate package.json if needed
         createPackageJson(moduleName, dir, workspaceModulesDir);
     }
+
+    //temporary hack to get discord_overlay2 working
+    //apparently the directory works fine if you rename it, lol
+    fs.renameSync(join(workspaceModulesDir,"discord_desktop_core","core"), join(workspaceModulesDir,"discord_desktop_core","core.asar"))
+    fs.writeFileSync(join(workspaceModulesDir,"discord_desktop_core","index.js"), "module.exports = require('./core.asar');")
 }
 exports.createLightcordModules = createLightcordModules;
