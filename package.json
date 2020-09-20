@@ -6,7 +6,10 @@
   "scripts": {
     "compile": "node compile.js",
     "test": "npm run compile && electron .",
+    "test_dynamic": "npm run compile && NODE_THING='development' electron .",
     "run": "electron .",
+    "download:discord_modules": "node scripts/getModules.js",
+    "dynamic_patching": "node scripts/createPatches.js && node scripts/createWorkspaceModules.js && node scripts/installSubWorkspaceModules.js",
     "build": "npm run build:minify && npm run build:electron",
     "build:electron": "node build_electron.js",
     "build:electron_win": "electron-builder build --win",
@@ -18,6 +21,8 @@
     "clean:all": "node scripts/clean.js --all",
     "devInstall": "npm i --save-dev --arch=ia32 electron@9.3.1 && node installSubModules.js && echo \"Everything is installed. You should be able to do npm test to compile everything and launch.\"",
     "devInstall:64": "npm i --save-dev --arch=x64 electron@9.3.1 && node installSubModules.js && echo \"Everything is installed. You should be able to do npm test to compile everything and launch.\"",
+    "dynamicDevInstall": "npm i --save-dev --arch=ia32 electron@9.3.1 && npm run download:discord_modules && npm run dynamic_patching",
+    "dynamicDevInstall:64": "npm i --save-dev --arch=x64 electron@9.3.1 && npm run download:discord_modules && npm run dynamic_patching",
     "versions": "echo Electron: && electron -v && echo Typescript: && tsc -v",
     "ci": "node ci-deploy"
   },
@@ -26,9 +31,12 @@
   "dependencies": {
     "auto-launch": "^5.0.5",
     "custom-electron-titlebar": "^3.2.2-hotfix62",
+    "fast-glob": "^3.2.4",
+    "fs-extra": "^9.0.1",
     "glasstron": "0.0.4",
     "mkdirp": "^1.0.4",
     "node-fetch": "^2.6.0",
+    "recursive-patch": "hormelcookies/recursive-patch",
     "request": "^2.88.2",
     "rimraf": "^3.0.2",
     "tmp": "^0.2.1",
@@ -37,6 +45,7 @@
   "private": true,
   "devDependencies": {
     "@types/auto-launch": "^5.0.1",
+    "@types/diff": "^4.0.2",
     "@types/electron-devtools-installer": "^2.2.0",
     "@types/micromatch": "^4.0.1",
     "@types/mkdirp": "^1.0.0",
@@ -45,14 +54,15 @@
     "@types/uuid": "^8.0.0",
     "@types/yauzl": "^2.9.1",
     "asar": "^3.0.3",
+    "commander": "^6.1.0",
     "cross-spawn": "^7.0.3",
     "electron": "9.3.1",
     "electron-builder": "^22.8.0",
-    "fast-glob": "^3.2.4",
-    "fs-extra": "^9.0.1",
     "micromatch": "^4.0.2",
     "terser": "^4.7.0",
     "typescript": "^3.9.7",
+    "unzipper": "^0.10.11",
+    "wget-improved": "^3.2.1",
     "yazl": "^2.5.1"
   }
 }
