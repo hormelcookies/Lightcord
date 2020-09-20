@@ -30,7 +30,7 @@ fs.readdirSync(MODULES_DIRNAME, {withFileTypes: true})
     spawnNpmInstallProcess(MODULE_DIRNAME)
 })
 
-const MODULE_DIRNAME = path.join(MODULES_DIRNAME, "discord_desktop_core", "core")
+const MODULE_DIRNAME = path.join(MODULES_DIRNAME, "discord_desktop_core", "core.asar")
 const BETTERDISCORD_DIRNAME = path.join(PROJECT_DIRNAME, "BetterDiscordApp")
 const DISCORDJS_DIRNAME = path.join(PROJECT_DIRNAME, "DiscordJS")
 const LIGHTCORDAPI_DIRNAME = path.join(PROJECT_DIRNAME, "LightcordApi")
