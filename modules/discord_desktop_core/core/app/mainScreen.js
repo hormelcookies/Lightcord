@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.getMainWindowId = getMainWindowId;
 exports.webContentsSend = webContentsSend;
 exports.init = init;
-exports.handleSingleInstance = handleSingleInstance;
+exports.handleOpenUrl = handleOpenUrl;
 exports.setMainWindowVisible = setMainWindowVisible;
 exports.setBlurType = setBlurType
 exports.setVibrancy = setVibrancy
@@ -117,21 +117,18 @@ function getSanitizedPath(path) {
   return new _url.URL(path, WEBAPP_ENDPOINT).pathname;
 }
 
-function extractPathFromArgs(args, fallbackPath) {
-  if (args.length === 3 && args[0] === '--url' && args[1] === '--') {
-    try {
-      const parsedURL = _url.parse(args[2]);
-      if (parsedURL.protocol === 'discord:') {
-        return getSanitizedPath(parsedURL.path);
-      }
-    } catch (_) {} // protect against URIError: URI malformed
-  }
-  return fallbackPath;
+function getSanitizedProtocolPath(url_) {
+  try {
+    const parsedURL = _url2.default.parse(url_);
+    if (parsedURL.protocol === 'discord:') {
+      return getSanitizedPath(parsedURL.path);
+    }
+  } catch (_) {} // protect against URIError: URI malformed
+  return null;
 }
 
 // TODO: These should probably be thrown in constants.
-const INITIAL_PATH = extractPathFromArgs(process.argv.slice(1), '/app');
-const WEBAPP_PATH = settings.get('WEBAPP_PATH', `${INITIAL_PATH}?_=${Date.now()}`);
+const WEBAPP_PATH = settings.get('WEBAPP_PATH', `/app?_=${Date.now()}`);
 const URL_TO_LOAD = isTabs ? WEBAPP_ENDPOINT : `${WEBAPP_ENDPOINT}${WEBAPP_PATH}`;
 const MIN_WIDTH = settings.get('MIN_WIDTH', 940);
 const MIN_HEIGHT = settings.get('MIN_HEIGHT', 500);
@@ -145,6 +142,8 @@ const MIN_VISIBLE_ON_SCREEN = 32;
  */
 let mainWindow = null;
 let mainWindowId = _Constants.DEFAULT_MAIN_WINDOW_ID;
+let mainWindowInitialPath = null;
+let mainWindowDidFinishLoad = false;
 
 // whether we are in an intermediate auth process outside of our normal login screen (for e.g. internal builds)
 let insideAuthFlow = false;
@@ -415,6 +414,9 @@ function launchMainAppWindow(isVisible) {
       blinkFeatures: 'EnumerateDevices,AudioOutputDevices',
       nativeWindowOpen: true,
       enableRemoteModule: true,
+      additionalArguments: ['--enable-node-leakage-in-renderers'],
+      //TODO: ENABLE THIS
+      //contextIsolation: true,
       spellcheck: true,
       ...(isTabs ? {
         nodeIntegration: true,
@@ -463,7 +465,7 @@ function launchMainAppWindow(isVisible) {
 
   mainWindow.webContents.on('new-window', (e, windowURL, frameName, disposition, options) => {
     e.preventDefault();
-    if (frameName.startsWith(DISCORD_NAMESPACE) && windowURL.startsWith(WEBAPP_ENDPOINT)) {
+    if (frameName.startsWith(DISCORD_NAMESPACE) && windowURL.startsWith(WEBAPP_ENDPOINT) && getSanitizedPath(windowURL) === '/popout') {
       popoutWindows.openOrFocusWindow(e, windowURL, frameName, options);
     } else {
       electron.shell.openExternal(windowURL);
@@ -496,6 +498,13 @@ function launchMainAppWindow(isVisible) {
       insideAuthFlow = false;
     }
 
+    mainWindowDidFinishLoad = true;
+
+    // if this is a first open and there's an initial path, direct user to that path
+    if (mainWindowInitialPath != null) {
+      webContentsSend('MAIN_WINDOW_PATH', mainWindowInitialPath);
+      mainWindowInitialPath = null;
+    }
     webContentsSend(mainWindow != null && mainWindow.isFocused() ? 'MAIN_WINDOW_FOCUS' : 'MAIN_WINDOW_BLUR');
     
     if (!lastPageLoadFailed) {
@@ -782,15 +791,21 @@ function init() {
   launchMainAppWindow(false);
 }
 
-function handleSingleInstance(args) {
-  if (mainWindow != null) {
-    const appPath = extractPathFromArgs(args);
-    if (appPath != null) {
-      webContentsSend('MAIN_WINDOW_PATH', appPath);
+function handleOpenUrl(url) {
+  const path = getSanitizedProtocolPath(url);
+  if (path != null) {
+    if (!mainWindowDidFinishLoad) {
+      mainWindowInitialPath = path;
     }
-    setWindowVisible(true, false);
-    mainWindow.focus();
+    webContentsSend('MAIN_WINDOW_PATH', path);
   }
+
+  if (mainWindow == null) {
+    return;
+  }
+
+  setWindowVisible(true, false);
+  mainWindow.focus();
 }
 
 function setMainWindowVisible(visible) {

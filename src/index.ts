@@ -114,7 +114,7 @@ commit: ${buildInfo.commit}`);
 			}
 			
 			if (coreModule) {
-				coreModule.handleSingleInstance(args);
+				coreModule.handleOpenUrl(args);
 			}
 		});
 	}

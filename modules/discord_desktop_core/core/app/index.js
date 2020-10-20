@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.startup = startup;
-exports.handleSingleInstance = handleSingleInstance;
+exports.handleOpenUrl = handleOpenUrl;
 exports.setMainWindowVisible = setMainWindowVisible;
 const { Menu, BrowserWindow } = require('electron');
 const fetch = require("node-fetch").default
@@ -40,6 +40,7 @@ function startup(bootstrapModules) {
   app.injectBuildInfo(buildInfo);
   app.injectModuleUpdater(moduleUpdater);
   require('./discord_native/browser/clipboard');
+  require('./discord_native/browser/constants');
   const crashReporter = require('./discord_native/browser/crashReporter');
   crashReporter.injectBuildInfo(buildInfo);
   const features = require('./discord_native/browser/features');
@@ -183,8 +184,8 @@ function startup(bootstrapModules) {
   }
 }
 
-function handleSingleInstance(args) {
-  mainScreen.handleSingleInstance(args);
+function handleOpenUrl(url) {
+  mainScreen.handleOpenUrl(url);
 }
 
 function setMainWindowVisible(visible) {

@@ -173,10 +173,10 @@ function readFiles(filenames, maxSize, makeFile) {
       if (err) return reject(err);
 
       if (stats.size > maxSize) {
-        const err = new Error('upload too large');
-        // used to help determine why openFiles failed
-        err.code = 'ETOOLARGE';
-        return reject(err);
+        // Used to help determine why openFiles failed.
+        // Cannot use an error here because context bridge will remove the code field.
+        // eslint-disable-next-line prefer-promise-reject-errors
+        return reject({ code: 'ETOOLARGE', message: 'upload too large' });
       }
 
       originalFs.readFile(filename, (err, data) => {
