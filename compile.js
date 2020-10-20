@@ -28,10 +28,10 @@ function spawnSync(cmdString, cwd){
         env: process.env,
         stdio: "inherit"
     }).on("error", (err) => {
-        const DIRSTRING = cwd != undefined ? cwd : process.env.PWD
-        console.log("Error while running " + cmdString + " in target directory " + DIRSTRING)
+        const DIRSTRING = cwd || process.env.PWD
+        console.error("Error while running " + cmdString + " in target directory " + DIRSTRING)
         console.error(err)
-        exitedWithErrorProcessList.push({cmd: cmdString, cwd: DIRSTRING})
+        exitedWithErrorProcessList.push({cmd: cmdString, cwd: DIRSTRING, err: err})
     })    
 }
 
@@ -40,6 +40,7 @@ process.on("beforeExit", () => {
         console.error("Commands exited with errors:\n")
         exitedWithErrorProcessList.forEach((val)=>{
             console.error("\tcommand:\t\t" + val.cmd + "\n\ttarget directory:\t" + val.cwd + "\n")
+            console.error(val.err)
         });
     }
     console.log(`Exiting compilation`)
