@@ -19,8 +19,8 @@ function spawnProcess(cmd, ...args) {
         console.error(result.stderr)
         process.exit(1)
     }
-
 }
+
 let result;
 if (process.platform === "win32"){
     env.NPM_CONFIG_ELECTRON_MIRROR = "https://github.com/hormelcookies/supercoolrepo/releases/download/" 

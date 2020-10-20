@@ -60,10 +60,10 @@ class ModulesVersionInfo {
      */
     getModuleDLDir(moduleName, platform) {
         platform = dapiPlatform(platform);
-        let platform_info = this.getPlatformVersionInfo(platform);
-        let branch = this.branch;
-        let host_version = platform_info.host_version;
-        let version = platform_info.modules[moduleName];
+        const platform_info = this.getPlatformVersionInfo(platform);
+        const branch = this.branch;
+        const host_version = platform_info.host_version;
+        const version = platform_info.modules[moduleName];
     
         // ${branch}/${platform}/${host_version}/${module}/${version}
         return join(branch, platform, host_version, moduleName, version.toString());

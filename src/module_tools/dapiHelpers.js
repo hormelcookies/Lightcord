@@ -2,7 +2,7 @@
  *
  * Normalizes platform name to discord api
  * @param {string} platform
- * @returns {string "win" | "osx" | "linux"}
+ * @returns {string "win" | "osx" | "linux" | null}
  */
 function dapiPlatform(platform) {
     const DISCORD_API_PLATFORMS = ['win', 'osx', 'linux'];
