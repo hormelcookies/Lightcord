@@ -5,7 +5,7 @@ const child_process = require("child_process")
 
 let env = process.env
 
-function spawnProcess(cmd, ...args) {
+function spawnProcess(cmd, args) {
     const postfix = cmd === "node" ? ".exe" : ".cmd"
     cmd = process.platform === "win32" ? cmd + postfix : cmd
     let result = child_process.spawnSync(cmd, args, {
@@ -19,20 +19,23 @@ function spawnProcess(cmd, ...args) {
         console.error(result.stderr)
         process.exit(1)
     }
-
 }
-let result;
-spawnProcess("npm", "rm", "electron")
-spawnProcess("npm", "i")
-if (process.platform === "win32"){
-    result = spawnProcess("npm", "i", "--save-dev", "--arch=ia32", "electron@9.3.1")
-} else {
-    result = spawnProcess("npm", "i", "--save-dev", "--arch=x64", "electron@9.3.1")
+function npmistring(){
+    if (process.platform === "win32"){
+        return ["i", "--save-dev", "--arch=ia32", "electron@9.3.1"]
+    } else {
+        return ["i", "--save-dev", "--arch=x64", "electron@9.3.1"]
+    }
 }
 
+try{
+    spawnProcess("npm",npmistring())
+//just try again
+} catch (err){
+    spawnProcess("npm",npmistring())
+}
 let runString = "`npm test`"
 
-spawnProcess("node", join(PROJECT_DIRNAME,"scripts", "installSubModules.js"))
-
+spawnProcess(join(PROJECT_DIRNAME,"node_modules",".bin","gulp"), ["devinstall"])
 
 console.log("Everything is installed. You should be able to do "+runString+" to compile everything and launch.")

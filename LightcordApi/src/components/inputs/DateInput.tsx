@@ -1,12 +1,15 @@
 /** TODO: Finish DateInput */
 
-import * as React from "react"
-import { DateConstants } from "./DateRange"
+import React = require("react")
 import WebpackLoader from "../../modules/WebpackLoader"
 import { getInternalTextInput } from "./TextInput"
 import Button from "./Button"
 import ReactDOM = require("react-dom")
 import * as DatePicker from "react-datepicker";
+
+const DateConstants = {
+    DATE_FORMAT: "yyyy-MM-dd"
+}
 
 export type DateInputProps = {
     className?: string,

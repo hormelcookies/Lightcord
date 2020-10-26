@@ -8,6 +8,8 @@ const fetch = require("node-fetch").default
 const uuid = require("uuid/v4")
 
 const isPackaged = __filename.includes("app.asar")
+const buildInfo = electron.ipcRenderer.sendSync("LIGHTCORD_GET_BUILD_INFOS")
+const isProduction = (isPackaged || !(buildInfo.NODE_ENV !== "production"))
 
 const events = exports.events = new EventEmitter()
 const logger = exports.logger = new Logger("Lightcord")
@@ -26,7 +28,8 @@ exports.init = function(){
         return
     }
     formatLogger.log("The app is", isPackaged ? "packaged." : "not packaged.")
-    
+    formatLogger.log("The app is", isProduction ? "in production." : "in development.")
+
     hasInit = true
     let readyInterval = setInterval(()=>{
         events.emit("debug", `[INIT] try ${tries++} loading Lightcord`)
@@ -175,7 +178,7 @@ async function privateInit(){
 
     let constants = ModuleLoader.get(m=>m.API_HOST)[0]
     let dispatcher = ModuleLoader.get(m=>m.Dispatcher&&m.default&&m.default.dispatch)[0].default
-    require(formatMinified(path.join(__dirname, "../../../../../BetterDiscordApp/dist/style{min}.css")))
+    require("BetterDiscordApp/dist/style.css")
     require("./lightcord.css")
 
     function getCurrentHypesquad(){
@@ -267,11 +270,12 @@ async function privateInit(){
     }
 
     /**
-     * @type {typeof import("../../../../../DiscordJS").default}
+     * @type {typeof import("DiscordJS").default}
      */
     let DiscordJS
     try{
-        DiscordJS = require("../../../../../DiscordJS").default
+        //DiscordJS = require("DiscordJS").default;
+        DiscordJS = require("DiscordJS").default
     }catch(err){
         console.error(err)
         DiscordJS = null
@@ -308,7 +312,7 @@ async function privateInit(){
         DiscordNative.ipc.send("UPDATE_THEME", data.settings.theme)
     })
 
-    require(formatMinified("lightcordapi/js/main{min}.js"))
+    require("LightcordApi")
 
     /*
     if(shouldShowPrompt){
@@ -381,7 +385,7 @@ async function privateInit(){
         dispatcher.subscribe(constants.ActionTypes.CONNECTION_OPEN || "CONNECTION_OPEN", onConn)
     }*/
 
-    const BetterDiscord = new(require(formatMinified("../../../../../BetterDiscordApp/dist/index{min}.js")).default)(BetterDiscordConfig, require("./betterdiscord"))
+    const BetterDiscord = new(require("BetterDiscordApp").default)(BetterDiscordConfig, require("./betterdiscord"))
 
     const Utils = window.Lightcord.BetterDiscord.Utils
     const DOMTools = window.Lightcord.BetterDiscord.DOM

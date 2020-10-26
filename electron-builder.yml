@@ -16,7 +16,7 @@ win:
   - target: portable
     arch:
     - ia32
-  icon: discord.ico
+  icon: icons/discord.ico
   publisherName: Lightcord
   files:
   - "**/*"
@@ -38,7 +38,7 @@ linux:
 #  - target: AppImage
 #    arch:
 #    - x64
-  icon: discord.png
+  icon: icons/discord.png
   files:
   - "**/*"
   - "!**/*.ts"
@@ -55,7 +55,7 @@ mac:
   - target: zip
     arch:
     - x64
-  icon: discord.icns
+  icon: icons/discord.icns
   files:
   - "**/*"
   - "!**/*.ts"

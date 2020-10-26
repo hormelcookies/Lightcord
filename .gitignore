@@ -118,9 +118,6 @@ discord-webrtc_0
 # macOS Stuff
 .DS_Store
 
-# VS Code stuff
-.vscode
-
 # Compiled JS files
 LightcordApi/js
 DiscordJS/js
@@ -129,3 +126,5 @@ BetterDiscordApp/dist
 downloaded_modules
 workspace_modules
 new_modules_version.json
+
+test/

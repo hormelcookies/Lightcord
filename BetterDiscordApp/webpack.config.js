@@ -1,18 +1,50 @@
 const path = require("path");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
-const child_process = require("child_process")
-
-module.exports = {
-  mode: "development",
-  target: "node",
+const { merge } = require("webpack-merge")
+const { SourceMapDevToolPlugin } = require("webpack")
+const {
+  ESBuildPlugin,
+  ESBuildMinifyPlugin
+} = require('esbuild-loader')
+  
+let developmentConfig ={
   devtool: "inline-source-map",
+  mode: "development",
+  output: {
+    path: path.resolve(__dirname, "dist")
+  },
+  optimization:{
+    minimize: false
+  }
+}
+//let productionOutputPath = path.resolve(__dirname, "dist")
+let productionOutputPath = path.resolve("..", "DistApp", "BetterDiscordApp", "dist")
+let PROJECT_DIR_URL = 'file:///' + productionOutputPath.split(path.sep).join(path.posix.sep)
+
+let productionConfig ={
+    devtool: false,
+    plugins: [ new SourceMapDevToolPlugin({
+        filename: 'index.js.map',
+        namespace: 'BetterDiscordApp',
+        append: "\n//# sourceMappingURL=" + PROJECT_DIR_URL + "/[url]",
+    })],
+    mode: "production",
+    output: {
+        path: productionOutputPath
+    },
+    optimization:{
+        minimize: true
+    }
+}
+
+let config = {
+  target: "electron-renderer",
   entry: "./src/index.js",
   output: {
     filename: "index.js",
-    path: path.resolve(__dirname, "dist"),
     library: "BetterDiscord",
-    libraryTarget: "commonjs2"
+    libraryTarget: "umd"
   },
   externals: {
     electron: `electron`,
@@ -40,20 +72,18 @@ module.exports = {
     rules: [
       {
         test: /\.jsx?$/,
-        loader: "babel-loader",
+        loader: "esbuild-loader",
         exclude: /node_modules/,
-        query: {
-          presets: [["@babel/env", {
-            targets: {
-                node: "12.8.1",
-                chrome: "78"
-            }
-        }], "@babel/react"]
+        options:{
+          loader: 'jsx',
+          target: 'chrome83',
+          format: 'cjs'
         }
       }
     ]
   },
-  plugins: [  
+  plugins: [
+    new ESBuildPlugin(),
     new CircularDependencyPlugin({
       // exclude detection of files based on a RegExp
       exclude: /a\.js|node_modules/,
@@ -65,12 +95,17 @@ module.exports = {
   ],
   optimization: {
     minimizer: [
-      new TerserPlugin({
-        terserOptions: {
-          compress: {drop_debugger:false}
-        },
-        sourceMap: true
+      new ESBuildMinifyPlugin({
+        target: 'chrome83',
+        sourcemap: true,
+        format: 'cjs'
       })
     ]
   }
 };
+
+if (process.env.NODE_ENV === "production") {
+  module.exports = merge(config, productionConfig);
+} else {
+  module.exports = merge(config, developmentConfig);
+}

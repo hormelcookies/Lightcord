@@ -1,6 +1,6 @@
 /** TODO: Finish DateRange */
 
-import * as React from "react"
+import React = require("react")
 import Flex, { FlexChild } from "../general/Flex"
 import Text from "../general/Text"
 

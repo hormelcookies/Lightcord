@@ -1,0 +1,101 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Electron: Main",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+      "windows": {
+        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
+      },
+      "sourceMaps": true,
+      "env": {
+        "ELECTRON_ENABLE_LOGGING": "true",
+      },
+      "args": ["${workspaceRoot}", "--remote-debugging-port=9223", "--enable-logging"],
+      "type": "pwa-node",
+      "console": "integratedTerminal",
+      "outputCapture": "std",
+    },
+    {
+      "name": "Electron: Renderer",
+      "type": "pwa-chrome",
+      "request": "attach",
+      "port": 9223,
+      "timeout": 30000,
+      "webRoot": "${workspaceRoot}",
+      "sourceMaps": true,
+      "sourceMapPathOverrides": {
+        "webpack://DiscordJS/./*": "${workspaceRoot}/DiscordJS/*",
+        "webpack://BetterDiscordApp/./*": "${workspaceRoot}/BetterDiscordApp/*",
+        "webpack://LightcordApi/./*": "${workspaceRoot}/LightcordApi/*",
+      }
+    },
+    {
+      "name": "Electron: Main (Production)",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+      "windows": {
+        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
+      },
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "sourceMaps": true,
+      "env": {
+        "NODE_ENV": "production",
+        "ELECTRON_ENABLE_LOGGING": "true",
+      },
+      "args": ["${workspaceRoot}/distApp", "--remote-debugging-port=9223", "--enable-logging"],
+      "type": "pwa-node",
+      "console": "integratedTerminal",
+      "outputCapture": "std",
+    },
+    {
+      "name": "Electron: Renderer (Production)",
+      "type": "pwa-chrome",
+      "request": "attach",
+      "port": 9223,
+      "timeout": 30000,
+      "webRoot": "${workspaceRoot}",
+      "sourceMaps": true,
+      "sourceMapPathOverrides": {
+        "webpack://DiscordJS/./*": "${workspaceRoot}/DiscordJS/*",
+        "webpack://BetterDiscordApp/./*": "${workspaceRoot}/BetterDiscordApp/*",
+        "webpack://LightcordApi/./*": "${workspaceRoot}/LightcordApi/*",
+      },
+    },
+    {
+      "name": "debug gulp",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/gulp",
+      "windows": {
+        "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/gulp.cmd"
+      },
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "sourceMaps": true,
+      "env": {
+        "ELECTRON_ENABLE_LOGGING": "true",
+      },
+      "cwd": "${workspaceFolder}",
+      "args": ["compile"],
+      "type": "pwa-node",
+      "console": "integratedTerminal",
+      "outputCapture": "std",
+    },
+  ],
+  "compounds": [
+    {
+      "name": "Electron: All (Development)",
+      "configurations": ["Electron: Main", "Electron: Renderer"],
+      "preLaunchTask": "npm: compile",
+    },
+    {
+      "name": "Electron: All (Production)",
+      "configurations": ["Electron: Main (Production)", "Electron: Renderer (Production)"],
+      "preLaunchTask": "npm: build:compile"
+    }
+  ]
+}

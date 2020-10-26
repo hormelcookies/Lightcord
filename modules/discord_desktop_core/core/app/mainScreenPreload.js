@@ -12,9 +12,13 @@ const path = require("path")
 const Buffer = require("safe-buffer").Buffer
 
 moduleAlias.setMain(module)
-moduleAlias.addAlias("@lightcord/api", path.join(__dirname, "../../../../LightcordApi"))
-moduleAlias.addAlias("lightcordapi", path.join(__dirname, "../../../../LightcordApi"))
+const isPackaged = __filename.includes("app.asar")
+moduleAlias.addAlias("LightcordApi", path.join(__dirname, "../../../../LightcordApi"))
+moduleAlias.addAlias("DiscordJS", path.join(__dirname, "../../../../DiscordJS"))
+moduleAlias.addAlias("BetterDiscordApp", path.join(__dirname, "../../../../BetterDiscordApp/dist/index.js"))
+moduleAlias.addAlias("BetterDiscordApp/dist/style.css",path.join(__dirname, "../../../../BetterDiscordApp/dist/style.css"))
 moduleAlias.addPath(path.join(__dirname, "BetterDiscord", "modules"))
+
 
 const TRACK_ANALYTICS_EVENT = 'TRACK_ANALYTICS_EVENT';
 const TRACK_ANALYTICS_EVENT_COMMIT = 'TRACK_ANALYTICS_EVENT_COMMIT';

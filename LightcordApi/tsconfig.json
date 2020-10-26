@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "esModuleInterop": true,
         "noImplicitAny": false,
         "module": "CommonJS",
         "target": "ES2017",
@@ -9,7 +10,12 @@
         "rootDir": "./src",
         "sourceMap": true,
         "declaration": true,
-        "allowJs": true
+        "allowJs": true,
+        "baseUrl": ".",
+        "paths": {
+            "react": ["src/alias/react.js"],
+            "react-dom": ["src/alias/react-dom.js"],
+        }
     },
     "exclude": [
         "./js/**",

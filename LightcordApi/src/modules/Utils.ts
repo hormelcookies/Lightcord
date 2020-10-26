@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 import ReactDOM = require("react-dom")
-import PluginUtilities from "./PluginUtilities";
+//import PluginUtilities from "./PluginUtilities";
 
 /**
  * Set of methods that can help you sometimes.
@@ -21,7 +21,7 @@ export default new class Utils {
     /**
      * Still in beta.
      */
-    get PluginUtils(){return PluginUtilities}
+    //get PluginUtils(){return PluginUtilities}
 
     /**
      * Return the object after going through the path given path
